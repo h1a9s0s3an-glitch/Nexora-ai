@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Nexora AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora AI</title>
 
 <style>
 body{
@@ -10,64 +10,74 @@ margin:0;
 font-family:Arial,sans-serif;
 background:#0f172a;
 color:white;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+header{
+padding:15px;
+background:#1e293b;
 text-align:center;
+font-size:24px;
+font-weight:bold;
 }
 
-.hero{
-padding:80px 20px;
+#chat{
+flex:1;
+padding:15px;
+overflow-y:auto;
 }
 
-h1{
-font-size:42px;
+.message{
+padding:10px;
+margin:10px 0;
+border-radius:12px;
+max-width:80%;
 }
 
-p{
-color:#cbd5e1;
+.user{
+background:#2563eb;
+margin-left:auto;
 }
 
-.btn{
-display:inline-block;
-padding:12px 24px;
+.ai{
+background:#334155;
+}
+
+.input-area{
+display:flex;
+padding:10px;
+background:#1e293b;
+}
+
+input{
+flex:1;
+padding:12px;
+border:none;
+border-radius:10px;
+}
+
+button{
+margin-left:10px;
+padding:12px 20px;
+border:none;
+border-radius:10px;
 background:#2563eb;
 color:white;
-text-decoration:none;
-border-radius:10px;
-margin-top:15px;
-}
-
-.card{
-background:#1e293b;
-padding:20px;
-margin:15px;
-border-radius:15px;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="hero">
-<h1>🚀 Nexora AI</h1>
-<p>Your intelligent AI assistant for learning, coding and creativity.</p>
+<header>🚀 Nexora AI</header>
 
-<a href="#" class="btn">Start Chat</a>
+<div id="chat">
+<div class="message ai">
+Hello! I am Nexora AI. How can I help you today?
+</div>
 </div>
 
-<div class="card">
-<h2>📚 Smart Learning</h2>
-<p>Learn any subject in a simple way.</p>
-</div>
-
-<div class="card">
-<h2>💻 Coding Help</h2>
-<p>Get coding explanations and projects.</p>
-</div>
-
-<div class="card">
-<h2>🧠 AI Assistant</h2>
-<p>Ask questions and get helpful answers.</p>
-</div>
-
-</body>
-</html>
+<div class="input-area">
+<input id="msg
