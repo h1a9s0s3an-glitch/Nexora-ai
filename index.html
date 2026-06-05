@@ -83,9 +83,8 @@ Hello! I am Nexora AI. How can I help you today?
 <input id="msg" placeholder="Type a message...">
 <button onclick="sendMessage()">Send</button>
 </div>
-
 <script>
-function sendMessage(){
+async function sendMessage(){
 let input=document.getElementById("msg");
 let chat=document.getElementById("chat");
 
@@ -96,15 +95,23 @@ user.className="message user";
 user.innerText=input.value;
 chat.appendChild(user);
 
+const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: input.value
+})
+});
+
+const data = await response.json();
+
 let ai=document.createElement("div");
 ai.className="message ai";
-ai.innerText="This is a demo response from Nexora AI.";
+ai.innerText=data.reply;
 chat.appendChild(ai);
 
 input.value="";
 chat.scrollTop=chat.scrollHeight;
 }
-</script>
-
-</body>
-</html>
