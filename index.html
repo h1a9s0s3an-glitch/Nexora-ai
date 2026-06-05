@@ -65,6 +65,7 @@ border:none;
 border-radius:10px;
 background:#2563eb;
 color:white;
+cursor:pointer;
 }
 </style>
 </head>
@@ -83,35 +84,51 @@ Hello! I am Nexora AI. How can I help you today?
 <input id="msg" placeholder="Type a message...">
 <button onclick="sendMessage()">Send</button>
 </div>
+
 <script>
-async function sendMessage(){
-let input=document.getElementById("msg");
-let chat=document.getElementById("chat");
+async function sendMessage() {
+  const input = document.getElementById("msg");
+  const chat = document.getElementById("chat");
 
-if(input.value.trim()=="") return;
+  if (!input.value.trim()) return;
 
-let user=document.createElement("div");
-user.className="message user";
-user.innerText=input.value;
-chat.appendChild(user);
+  const text = input.value;
 
-const response = await fetch("/api/chat", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    message: input.value
-})
-});
+  let user = document.createElement("div");
+  user.className = "message user";
+  user.innerText = text;
+  chat.appendChild(user);
 
-const data = await response.json();
+  input.value = "";
 
-let ai=document.createElement("div");
-ai.className="message ai";
-ai.innerText=data.reply;
-chat.appendChild(ai);
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text
+      })
+    });
 
-input.value="";
-chat.scrollTop=chat.scrollHeight;
+    const data = await response.json();
+
+    let ai = document.createElement("div");
+    ai.className = "message ai";
+    ai.innerText = data.reply || "No response received.";
+    chat.appendChild(ai);
+
+  } catch (error) {
+    let ai = document.createElement("div");
+    ai.className = "message ai";
+    ai.innerText = "Error connecting to Nexora AI.";
+    chat.appendChild(ai);
+  }
+
+  chat.scrollTop = chat.scrollHeight;
 }
+</script>
+
+</body>
+</html>
