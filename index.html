@@ -80,4 +80,31 @@ Hello! I am Nexora AI. How can I help you today?
 </div>
 
 <div class="input-area">
-<input id="msg
+<input id="msg" placeholder="Type a message...">
+<button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+function sendMessage(){
+let input=document.getElementById("msg");
+let chat=document.getElementById("chat");
+
+if(input.value.trim()=="") return;
+
+let user=document.createElement("div");
+user.className="message user";
+user.innerText=input.value;
+chat.appendChild(user);
+
+let ai=document.createElement("div");
+ai.className="message ai";
+ai.innerText="This is a demo response from Nexora AI.";
+chat.appendChild(ai);
+
+input.value="";
+chat.scrollTop=chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
