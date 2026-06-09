@@ -1,4 +1,10 @@
 module.exports = async function(req, res) {
+if (req.method !== "POST") {
+return res.status(405).json({
+reply: "⚠️ Method not allowed"
+});
+}
+
 try {
 const { message } = req.body;
 
@@ -8,27 +14,33 @@ const response = await fetch(
   {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: message
-        }]
-      }]
-    })
+      contents: [
+        {
+          parts: [
+            {
+              text: message,
+            },
+          ],
+        },
+      ],
+    }),
   }
 );
 
 const data = await response.json();
 
-res.status(200).json({
-  reply: JSON.stringify(data)
-});
+const reply =
+  data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+  "⚠️ AI service is currently unavailable. Please try again later.";
 
-} catch (err) {
+res.status(200).json({ reply });
+
+} catch (error) {
 res.status(200).json({
-reply: err.message
+reply: "⚠️ Error connecting to Nexora AI."
 });
 }
 };
