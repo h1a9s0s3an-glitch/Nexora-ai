@@ -5,12 +5,40 @@
 <title>Nexora AI</title>
 
 <style>
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:Arial,sans-serif;
+}
+
+body{
+display:flex;
+height:100vh;
 background:#0f172a;
 color:white;
-height:100vh;
+}
+
+.sidebar{
+width:250px;
+background:#111827;
+padding:15px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.sidebar button{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#1e293b;
+color:white;
+}
+
+.main{
+flex:1;
 display:flex;
 flex-direction:column;
 }
@@ -18,15 +46,15 @@ flex-direction:column;
 header{
 padding:15px;
 background:#1e293b;
-text-align:center;
 font-size:24px;
 font-weight:bold;
+text-align:center;
 }
 
 #chat{
 flex:1;
-padding:15px;
 overflow-y:auto;
+padding:15px;
 }
 
 .message{
@@ -58,7 +86,7 @@ border:none;
 border-radius:10px;
 }
 
-button{
+.send-btn{
 margin-left:10px;
 padding:12px 20px;
 border:none;
@@ -67,10 +95,31 @@ background:#2563eb;
 color:white;
 cursor:pointer;
 }
+
+@media(max-width:768px){
+.sidebar{
+width:80px;
+}
+
+.sidebar button{
+font-size:12px;
+padding:10px;
+}
+}
 </style>
 </head>
 
 <body>
+
+<div class="sidebar">
+<button onclick="newChat()">➕ New Chat</button>
+<button onclick="clearChat()">🗑 Clear</button>
+<button onclick="shareChat()">📤 Share</button>
+<button onclick="uploadImage()">🖼 Image</button>
+<button>📌 Pin</button>
+</div>
+
+<div class="main">
 
 <header>🚀 Nexora AI</header>
 
@@ -82,52 +131,57 @@ Hello! I am Nexora AI. How can I help you today?
 
 <div class="input-area">
 <input id="msg" placeholder="Type a message...">
-<button onclick="sendMessage()">Send</button>
+<button class="send-btn" onclick="sendMessage()">Send</button>
+</div>
+
 </div>
 
 <script>
-async function sendMessage() {
-  const input = document.getElementById("msg");
-  const chat = document.getElementById("chat");
 
-  if (!input.value.trim()) return;
+async function sendMessage(){
 
-  const text = input.value;
+const input=document.getElementById("msg");
+const chat=document.getElementById("chat");
 
-  let user = document.createElement("div");
-  user.className = "message user";
-  user.innerText = text;
-  chat.appendChild(user);
+if(!input.value.trim()) return;
 
-  input.value = "";
+const text=input.value;
 
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: text
-      })
-    });
+let user=document.createElement("div");
+user.className="message user";
+user.innerText=text;
+chat.appendChild(user);
 
-    const data = await response.json();
+input.value="";
 
-    let ai = document.createElement("div");
-    ai.className = "message ai";
-    ai.innerText = data.reply || "No response received.";
-    chat.appendChild(ai);
+let ai=document.createElement("div");
+ai.className="message ai";
+ai.innerText="⚠️ AI service is currently unavailable. Please try again later.";
+chat.appendChild(ai);
 
-  } catch (error) {
-    let ai = document.createElement("div");
-    ai.className = "message ai";
-    ai.innerText = "Error connecting to Nexora AI.";
-    chat.appendChild(ai);
-  }
-
-  chat.scrollTop = chat.scrollHeight;
+chat.scrollTop=chat.scrollHeight;
 }
+
+function newChat(){
+document.getElementById("chat").innerHTML=
+'<div class="message ai">New chat started 🚀</div>';
+}
+
+function clearChat(){
+document.getElementById("chat").innerHTML="";
+}
+
+function shareChat(){
+navigator.clipboard.writeText(
+document.getElementById("chat").innerText
+);
+alert("Chat copied to clipboard!");
+}
+
+function uploadImage(){
+alert("Image upload coming soon!");
+}
+
 </script>
 
 </body>
