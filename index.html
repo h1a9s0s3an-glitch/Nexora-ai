@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexora AI</title>
+<title>Nexora Workspace</title>
 
 <style>
 *{
@@ -20,12 +20,17 @@ color:white;
 }
 
 .sidebar{
-width:250px;
+width:240px;
 background:#111827;
 padding:15px;
 display:flex;
 flex-direction:column;
 gap:10px;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:10px;
 }
 
 .sidebar button{
@@ -35,6 +40,11 @@ border-radius:10px;
 cursor:pointer;
 background:#1e293b;
 color:white;
+font-size:15px;
+}
+
+.sidebar button:hover{
+background:#2563eb;
 }
 
 .main{
@@ -44,21 +54,30 @@ flex-direction:column;
 }
 
 header{
-padding:15px;
 background:#1e293b;
+padding:15px;
 font-size:24px;
 font-weight:bold;
 text-align:center;
 }
 
+.tab{
+display:none;
+height:100%;
+}
+
+.active{
+display:block;
+}
+
 #chat{
-flex:1;
+height:calc(100vh - 130px);
 overflow-y:auto;
 padding:15px;
 }
 
 .message{
-padding:10px;
+padding:12px;
 margin:10px 0;
 border-radius:12px;
 max-width:80%;
@@ -79,14 +98,14 @@ padding:10px;
 background:#1e293b;
 }
 
-input{
+.input-area input{
 flex:1;
 padding:12px;
 border:none;
 border-radius:10px;
 }
 
-.send-btn{
+.input-area button{
 margin-left:10px;
 padding:12px 20px;
 border:none;
@@ -96,15 +115,32 @@ color:white;
 cursor:pointer;
 }
 
+.page{
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:15px;
+border-radius:12px;
+margin-top:15px;
+}
+
 @media(max-width:768px){
+
 .sidebar{
-width:80px;
+width:85px;
+}
+
+.sidebar h2{
+font-size:14px;
 }
 
 .sidebar button{
-font-size:12px;
+font-size:11px;
 padding:10px;
 }
+
 }
 </style>
 </head>
@@ -112,38 +148,116 @@ padding:10px;
 <body>
 
 <div class="sidebar">
-<button onclick="newChat()">➕ New Chat</button>
-<button onclick="clearChat()">🗑 Clear</button>
-<button onclick="shareChat()">📤 Share</button>
-<button onclick="uploadImage()">🖼 Image</button>
-<button>📌 Pin</button>
+
+<h2>🚀 Nexora</h2>
+
+<button onclick="showTab('chat-tab')">💬 Chat</button>
+<button onclick="showTab('images-tab')">🖼 Images</button>
+<button onclick="showTab('files-tab')">📄 Files</button>
+<button onclick="showTab('code-tab')">💻 Code</button>
+<button onclick="showTab('notes-tab')">📝 Notes</button>
+<button onclick="showTab('projects-tab')">📊 Projects</button>
+<button onclick="showTab('settings-tab')">⚙️ Settings</button>
+
 </div>
 
 <div class="main">
 
-<header>🚀 Nexora AI</header>
+<header>Nexora Workspace</header>
+
+<div id="chat-tab" class="tab active">
 
 <div id="chat">
+
 <div class="message ai">
-Hello! I am Nexora AI. How can I help you today?
+Welcome to Nexora Workspace 🚀
 </div>
+
 </div>
 
 <div class="input-area">
-<input id="msg" placeholder="Type a message...">
-<button class="send-btn" onclick="sendMessage()">Send</button>
+<input id="msg" placeholder="Ask Nexora anything...">
+<button onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+
+<div id="images-tab" class="tab page">
+<h2>🖼 Images</h2>
+
+<div class="card">
+Image generation workspace coming soon.
+</div>
+
+</div>
+
+<div id="files-tab" class="tab page">
+<h2>📄 Files</h2>
+
+<div class="card">
+Upload and analyze files here.
+</div>
+
+</div>
+
+<div id="code-tab" class="tab page">
+<h2>💻 Code</h2>
+
+<div class="card">
+Generate and debug code here.
+</div>
+
+</div>
+
+<div id="notes-tab" class="tab page">
+<h2>📝 Notes</h2>
+
+<div class="card">
+Create and save notes here.
+</div>
+
+</div>
+
+<div id="projects-tab" class="tab page">
+<h2>📊 Projects</h2>
+
+<div class="card">
+Manage your AI projects here.
+</div>
+
+</div>
+
+<div id="settings-tab" class="tab page">
+<h2>⚙️ Settings</h2>
+
+<div class="card">
+Dark mode, voice, AI settings coming soon.
+</div>
+
 </div>
 
 </div>
 
 <script>
 
-async function sendMessage(){
+function showTab(tabId){
+
+const tabs=document.querySelectorAll(".tab");
+
+tabs.forEach(tab=>{
+tab.classList.remove("active");
+});
+
+document.getElementById(tabId).classList.add("active");
+
+}
+
+function sendMessage(){
 
 const input=document.getElementById("msg");
 const chat=document.getElementById("chat");
 
-if(!input.value.trim()) return;
+if(input.value.trim()=="") return;
 
 const text=input.value;
 
@@ -160,26 +274,7 @@ ai.innerText="⚠️ AI service is currently unavailable. Please try again later
 chat.appendChild(ai);
 
 chat.scrollTop=chat.scrollHeight;
-}
 
-function newChat(){
-document.getElementById("chat").innerHTML=
-'<div class="message ai">New chat started 🚀</div>';
-}
-
-function clearChat(){
-document.getElementById("chat").innerHTML="";
-}
-
-function shareChat(){
-navigator.clipboard.writeText(
-document.getElementById("chat").innerText
-);
-alert("Chat copied to clipboard!");
-}
-
-function uploadImage(){
-alert("Image upload coming soon!");
 }
 
 </script>
