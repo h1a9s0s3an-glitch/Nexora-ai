@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexora v2.3</title>
+<title>Nexora v2.4</title>
 
 <style>
 
@@ -68,6 +68,7 @@ background:#1e293b;
 padding:15px;
 border-radius:15px;
 margin-top:15px;
+animation:fadeIn .3s ease;
 }
 
 body.light .card{
@@ -75,78 +76,46 @@ background:white;
 color:black;
 }
 
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;transform:translateY(0);}
+}
+
 .stat{
-font-size:28px;
+font-size:30px;
 font-weight:bold;
 margin-top:10px;
 }
 
-#chat{
-padding:15px;
-height:calc(100vh - 180px);
-overflow-y:auto;
+.profile-card{
+text-align:center;
 }
 
-.message{
-padding:12px;
-margin:10px 0;
-border-radius:14px;
-max-width:80%;
+.avatar{
+font-size:50px;
+margin-bottom:10px;
 }
 
-.user{
-background:#2563eb;
-margin-left:auto;
-}
-
-.ai{
-background:#334155;
-}
-
-body.light .ai{
-background:#e5e5e5;
-color:black;
-}
-
-.time{
-font-size:11px;
-opacity:.7;
-margin-top:5px;
-}
-
-.tools{
-display:flex;
-gap:10px;
-padding:10px;
-}
-
-.tools button{
-padding:10px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
-.input-area{
-display:flex;
-padding:10px;
-background:#1e293b;
-}
-
-body.light .input-area{
-background:#dddddd;
-}
-
-.input-area input{
-flex:1;
+.search-box{
+width:100%;
 padding:12px;
 border:none;
 border-radius:10px;
+margin-top:10px;
 }
 
-.send-btn{
-margin-left:10px;
-padding:12px 20px;
+textarea{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+min-height:150px;
+}
+
+.save-btn{
+margin-top:10px;
+padding:10px 15px;
 border:none;
 border-radius:10px;
 background:#2563eb;
@@ -167,6 +136,7 @@ background:none;
 border:none;
 color:white;
 font-size:14px;
+cursor:pointer;
 }
 
 body.light .bottom-nav{
@@ -177,34 +147,16 @@ body.light .bottom-nav button{
 color:black;
 }
 
-textarea{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-margin-top:10px;
-min-height:150px;
-}
-
-.save-btn{
-margin-top:10px;
-padding:10px 15px;
-border:none;
-border-radius:10px;
-background:#2563eb;
-color:white;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-🚀 Nexora v2.3
+🚀 Nexora v2.4
 <button class="theme-btn" onclick="toggleTheme()">🌙</button>
 </header>
-<div id="dashboardTab" class="tab active page">
+<div id="homeTab" class="tab active page">
 
 <h2>🏠 Dashboard</h2>
 
@@ -223,39 +175,32 @@ Projects
 <div class="stat" id="projectCount">0</div>
 </div>
 
+<div class="card">
+Recent Activity
+<div id="activityBox">
+No activity yet.
 </div>
-
-<div id="chatTab" class="tab">
-
-<div class="tools">
-<button onclick="clearChat()">🗑 Clear</button>
-<button onclick="copyChat()">📋 Copy</button>
-</div>
-
-<div id="chat">
-
-<div class="message ai">
-Welcome to Nexora v2.3 🚀
-<div class="time">Now</div>
-</div>
-
-</div>
-
-<div class="input-area">
-<input id="msg" placeholder="Ask Nexora anything...">
-<button class="send-btn" onclick="sendMessage()">Send</button>
 </div>
 
 </div>
 
 <div id="notesTab" class="tab page">
 
-<h2>📝 Notes</h2>
+<h2>📝 Smart Notes</h2>
 
-<textarea id="notesArea"
-placeholder="Write your notes here..."></textarea>
+<input
+class="search-box"
+id="noteSearch"
+placeholder="🔍 Search notes..."
+onkeyup="searchNotes()">
 
-<button class="save-btn"
+<textarea
+id="notesArea"
+placeholder="Write your notes here...">
+</textarea>
+
+<button
+class="save-btn"
 onclick="saveNotes()">
 💾 Save Notes
 </button>
@@ -266,14 +211,28 @@ onclick="saveNotes()">
 
 <h2>📊 Projects</h2>
 
-<input id="projectName"
-placeholder="Project Name"
-style="width:100%;padding:12px;border:none;border-radius:10px;">
+<input
+class="search-box"
+id="projectName"
+placeholder="Project Name">
 
-<textarea id="projectDesc"
-placeholder="Project Description"></textarea>
+<textarea
+id="projectDesc"
+placeholder="Project Description">
+</textarea>
 
-<button class="save-btn"
+<select
+id="projectStatus"
+class="search-box">
+
+<option>🟢 Active</option>
+<option>🟡 Pending</option>
+<option>✅ Completed</option>
+
+</select>
+
+<button
+class="save-btn"
 onclick="addProject()">
 ➕ Add Project
 </button>
@@ -282,31 +241,50 @@ onclick="addProject()">
 
 </div>
 
+<div id="profileTab" class="tab page">
+
+<h2>👤 Profile</h2>
+
+<div class="card profile-card">
+
+<div class="avatar" id="avatar">
+🚀
+</div>
+
+<input
+class="search-box"
+id="profileName"
+placeholder="Your Name">
+
+<input
+class="search-box"
+id="avatarInput"
+placeholder="Avatar Emoji">
+
+<button
+class="save-btn"
+onclick="saveProfile()">
+💾 Save Profile
+</button>
+
+</div>
+
+</div>
+
 <div id="settingsTab" class="tab page">
 
 <h2>⚙️ Settings</h2>
 
 <div class="card">
-Profile Name
-<input id="profileName"
-placeholder="Your Name"
-style="width:100%;padding:12px;border:none;border-radius:10px;margin-top:10px;">
-<button class="save-btn"
-onclick="saveProfile()">
-💾 Save Profile
-</button>
+Theme, preferences and storage.
 </div>
 
 </div>
 
 <div class="bottom-nav">
 
-<button onclick="showTab('dashboardTab')">
+<button onclick="showTab('homeTab')">
 🏠<br>Home
-</button>
-
-<button onclick="showTab('chatTab')">
-💬<br>Chat
 </button>
 
 <button onclick="showTab('notesTab')">
@@ -315,6 +293,10 @@ onclick="saveProfile()">
 
 <button onclick="showTab('projectsTab')">
 📊<br>Projects
+</button>
+
+<button onclick="showTab('profileTab')">
+👤<br>Profile
 </button>
 
 <button onclick="showTab('settingsTab')">
@@ -327,23 +309,6 @@ onclick="saveProfile()">
 let messageCount =
 Number(localStorage.getItem("messageCount") || 0);
 
-function updateDashboard(){
-
-document.getElementById("msgCount").innerText =
-messageCount;
-
-document.getElementById("noteCount").innerText =
-localStorage.getItem("notesData")
-? 1 : 0;
-
-const projects =
-JSON.parse(localStorage.getItem("projects") || "[]");
-
-document.getElementById("projectCount").innerText =
-projects.length;
-
-}
-
 function showTab(id){
 
 document.querySelectorAll(".tab").forEach(tab=>{
@@ -354,78 +319,31 @@ document.getElementById(id).classList.add("active");
 
 }
 
-function getTime(){
+function updateDashboard(){
 
-return new Date().toLocaleTimeString([],{
-hour:"2-digit",
-minute:"2-digit"
-});
+document.getElementById("msgCount").innerText =
+messageCount;
 
-}
+document.getElementById("noteCount").innerText =
+localStorage.getItem("notesData") ? 1 : 0;
 
-function sendMessage(){
+const projects =
+JSON.parse(localStorage.getItem("projects") || "[]");
 
-const input=document.getElementById("msg");
-const chat=document.getElementById("chat");
-
-if(!input.value.trim()) return;
-
-const text=input.value;
-
-let user=document.createElement("div");
-user.className="message user";
-user.innerHTML=text+
-'<div class="time">'+getTime()+'</div>';
-
-chat.appendChild(user);
-
-input.value="";
-
-messageCount++;
-localStorage.setItem(
-"messageCount",
-messageCount
-);
-
-setTimeout(()=>{
-
-let ai=document.createElement("div");
-ai.className="message ai";
-ai.innerHTML=
-'⚠️ AI service is currently unavailable.'+
-'<div class="time">'+getTime()+'</div>';
-
-chat.appendChild(ai);
-
-localStorage.setItem(
-"nexoraChat",
-chat.innerHTML
-);
-
-updateDashboard();
-
-chat.scrollTop=chat.scrollHeight;
-
-},500);
+document.getElementById("projectCount").innerText =
+projects.length;
 
 }
 
-function clearChat(){
+function setActivity(text){
 
-document.getElementById("chat").innerHTML =
-'<div class="message ai">Chat cleared 🚀</div>';
+localStorage.setItem("activity",text);
 
-localStorage.removeItem("nexoraChat");
+const box=document.getElementById("activityBox");
 
+if(box){
+box.innerText=text;
 }
-
-function copyChat(){
-
-navigator.clipboard.writeText(
-document.getElementById("chat").innerText
-);
-
-alert("Chat copied!");
 
 }
 
@@ -439,9 +357,44 @@ localStorage.setItem(
 notes
 );
 
-alert("Notes saved!");
+setActivity("📝 Notes updated");
 
 updateDashboard();
+
+alert("Notes saved!");
+
+}
+
+function searchNotes(){
+
+const notes =
+localStorage.getItem("notesData") || "";
+
+const query =
+document.getElementById("noteSearch")
+.value
+.toLowerCase();
+
+if(query.length===0){
+
+document.getElementById("notesArea").value =
+notes;
+
+return;
+
+}
+
+if(notes.toLowerCase().includes(query)){
+
+document.getElementById("notesArea").value =
+notes;
+
+}else{
+
+document.getElementById("notesArea").value =
+"No matching notes found.";
+
+}
 
 }
 
@@ -453,6 +406,9 @@ document.getElementById("projectName").value;
 const desc =
 document.getElementById("projectDesc").value;
 
+const status =
+document.getElementById("projectStatus").value;
+
 if(!name) return;
 
 const projects =
@@ -462,7 +418,8 @@ localStorage.getItem("projects") || "[]"
 
 projects.push({
 name:name,
-desc:desc
+desc:desc,
+status:status
 });
 
 localStorage.setItem(
@@ -472,10 +429,12 @@ JSON.stringify(projects)
 
 renderProjects();
 
+updateDashboard();
+
+setActivity("📊 Project added");
+
 document.getElementById("projectName").value="";
 document.getElementById("projectDesc").value="";
-
-updateDashboard();
 
 }
 
@@ -498,7 +457,9 @@ container.innerHTML +=
 project.name+
 '</h3><p>'+
 project.desc+
-'</p></div>';
+'</p><br><b>'+
+project.status+
+'</b></div>';
 
 });
 
@@ -509,10 +470,23 @@ function saveProfile(){
 const name =
 document.getElementById("profileName").value;
 
+const avatar =
+document.getElementById("avatarInput").value || "🚀";
+
 localStorage.setItem(
 "profileName",
 name
 );
+
+localStorage.setItem(
+"profileAvatar",
+avatar
+);
+
+document.getElementById("avatar").innerText =
+avatar;
+
+setActivity("👤 Profile updated");
 
 alert("Profile saved!");
 
@@ -531,50 +505,59 @@ document.body.classList.contains("light")
 
 window.onload=function(){
 
-const savedChat =
-localStorage.getItem("nexoraChat");
-
-if(savedChat){
-document.getElementById("chat").innerHTML =
-savedChat;
-}
-
 const savedNotes =
 localStorage.getItem("notesData");
 
 if(savedNotes){
+
 document.getElementById("notesArea").value =
 savedNotes;
+
 }
 
-const savedProfile =
+const savedName =
 localStorage.getItem("profileName");
 
-if(savedProfile){
+if(savedName){
+
 document.getElementById("profileName").value =
-savedProfile;
+savedName;
+
+}
+
+const savedAvatar =
+localStorage.getItem("profileAvatar");
+
+if(savedAvatar){
+
+document.getElementById("avatar").innerText =
+savedAvatar;
+
+document.getElementById("avatarInput").value =
+savedAvatar;
+
+}
+
+const activity =
+localStorage.getItem("activity");
+
+if(activity){
+
+document.getElementById("activityBox").innerText =
+activity;
+
 }
 
 if(localStorage.getItem("nexoraTheme")==="true"){
+
 document.body.classList.add("light");
+
 }
 
 renderProjects();
 updateDashboard();
 
 };
-
-document.addEventListener("keydown",function(e){
-
-if(
-e.key==="Enter" &&
-document.activeElement===
-document.getElementById("msg")
-){
-sendMessage();
-}
-
-});
 
 </script>
 
